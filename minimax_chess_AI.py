@@ -1,7 +1,7 @@
 '''
 
 Practicum: Python Chess AI
-Authors: Blaise Page and Armen Arsinian
+Authors: Blaise Page and Phillip (Armen) Arsenian
 CSCI 3202: Intro to Artificial Intelligence
 Professor: Chris Heckman
 
@@ -9,9 +9,28 @@ Professor: Chris Heckman
 '''
 
 '''
-Variation of 4s maneuver that might win with depth 2:
-As White: 8,12,18,38,10 => this worked once
-As Black:
+In order to run this program you must first install python-chess.
+To install python-chess run the command:
+    pip3 install python-chess
+
+Once python-chess is installed, run the following command in this file's directory:
+    python3 minimax_chess_AI.py
+
+Then play the game!
+
+Also note, that I play with with a dark terminal, for this reason I have inverted the colors of the chess pieces. It is recommended to use a terminal with a non black/white background
+'''
+
+'''
+depth=1:
+depth=2: 1:26
+depth=3:
+'''
+
+'''
+Variation of 4s maneuver that "might" win with depth 2:
+As White, play: 8,12,18,38,10 => Note, move numbers may differ slightly
+As Black, play:
 '''
 
 import chess
@@ -19,7 +38,8 @@ import random
 import sys
 import collections
 from time import sleep
-
+import timeit
+import numpy as np
 
 ''' AI Minimax Agent '''
 class AlphaBetaAgent:
@@ -85,7 +105,7 @@ class AlphaBetaAgent:
             elif(white_piece == "Q"):
                 white_count += white_dict[white_piece]*9
             elif(white_piece == "K"):
-                white_count += white_dict[white_piece]*100
+                white_count += white_dict[white_piece]*1000
 
         # calculate the score for black
         for black_piece in black_dict:
@@ -101,10 +121,24 @@ class AlphaBetaAgent:
             elif(black_piece == "q"):
                 black_count += black_dict[black_piece]*9
             elif(black_piece == "k"):
-                black_count += black_dict[black_piece]*100
+                black_count += black_dict[black_piece]*1000
+
+        # Avoid white check
+        if((board.turn) and (board.is_check())):
+            white_count -= 10
+        # Avoid black check
+        if((not board.turn) and (board.is_check())):
+            black_count -= 10
+
+        # Avoid white checkmate
+        if((board.turn) and (board.is_checkmate())):
+            white_count -= 1000
+        # Avoid black checkmate
+        if((not board.turn) and (board.is_checkmate())):
+            black_count -= 1000
 
         # White's move
-        if(not board.turn):
+        if(board.turn):
             return (white_count - black_count)
         # Black's move
         else:
@@ -257,6 +291,8 @@ def main():
             board = chess.Board()
             agent = AlphaBetaAgent(board)
 
+            mean_time = []
+
             ''' Start the Game '''
             while(not board.is_game_over()):
 
@@ -266,12 +302,19 @@ def main():
                 print("")
                 print("The minimax agent is making a move... This could take a while...")
                 # get the best action
+                #start = timeit.timeit()
                 action = agent.getAction(board)
+                #end = timeit.timeit()
+                #time = (end-start)
+                #print(time)
+                #mean_time.append(time)
+
                 #print(action)
                 # make the move
                 curr_move = chess.Move.from_uci(action)
                 #print(curr_move)
                 board.push(curr_move)
+
 
                 # sleep to slow down moves
                 #sleep(1)
@@ -283,6 +326,8 @@ def main():
                 print("Black Wins!")
 
             board.clear()
+
+            print("Average AI move time: ", np.mean(mean_time))
 
         # Player vs AI
         elif(option == "2"):
@@ -298,11 +343,13 @@ def main():
             board = chess.Board()
             agent = AlphaBetaAgent(board)
 
+            mean_time = []
+
             while((not board.is_game_over() and ((side=="1")or(side=="2")))):
 
                 # Display the board in the terminal
                 print("")
-                print(board.unicode(invert_color = True, borders = True))
+                print(board.unicode(invert_color = True, borders = True)) #change these values to alter the way that the board prints
                 print("")
 
                 # player chose white
@@ -337,7 +384,13 @@ def main():
 
                         print("The minimax agent is making a move... This could take a while...")
 
+                        #start = timeit.timeit()
                         action = agent.getAction(board)
+                        #end = timeit.timeit()
+                        #time = (end-start)
+                        #print(time)
+                        #mean_time.append(time)
+
                         #print(action)
                         # make the move
                         curr_move = chess.Move.from_uci(action)
@@ -377,8 +430,14 @@ def main():
                     # AI's turn
                     else:
 
+
+                        #start = timeit.timeit()
                         action = agent.getAction(board)
-                        #print(action)
+                        #end = timeit.timeit()
+                        #time = (end-start)
+                        #print(time)
+                        #mean_time.append(time)
+
                         # make the move
                         curr_move = chess.Move.from_uci(action)
                         #print(curr_move)
@@ -397,6 +456,8 @@ def main():
                 else:
                     print("Ooh, the minimax agent beat you. That's embarrassing...")
 
+            print("Average AI move time: ", np.mean(mean_time))
+            board.clear()
 
 
         # Exit
