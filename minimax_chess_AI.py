@@ -172,14 +172,7 @@ class AlphaBetaAgent:
         #print(agent_number)
         #return immediately if it is a terminal state
         if(board.is_game_over()):
-            '''
-            turn = board.turn
-            self.finished = 1
-            if(not turn):
-                print("White Wins!")
-            else:
-                print("Black Wins!")
-            '''
+
             # check the following return ?????
             return float("inf")
 
@@ -430,6 +423,7 @@ def main():
                     # AI's turn
                     else:
 
+                        print("The minimax agent is making a move... This could take a while...")
 
                         #start = timeit.timeit()
                         action = agent.getAction(board)
