@@ -1,1 +1,3 @@
 # Artificial_Intelligence_Practicum
+
+This project was completed for our AI practicum in the CSCI 3202 CU Boulder class. For this project we implemented a chess AI agent that used minimax search and alpha-beta pruning to create a formidable oponent for players. In order to play against this agent, first install the python-chess package, then run the minimax_chess_AI.py file using python3. Note that the minimax agent takes a while to calculate its moves, so patience is required. Moreover, increasing the depth of the minimax tree will result in more intelligent moves from the minimax agent with the cost of a severe increase in computation time. I recommend that you keep the depth set to 2, in order make the gameplay more user friendly. Enjoy!
